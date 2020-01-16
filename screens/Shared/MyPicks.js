@@ -15,13 +15,10 @@ class MyPicks extends Component {
     }
 
     componentDidMount() {
-        console.log('componentDidMount')
         this.getAllNominations();
-        console.log(this.props)
     }
 
     getAllNominations = async () => {
-        console.log('getAllNominations')
         this.setState({ loading: true });
         try {
             let response = await fetch('https://oscars-picks-api.herokuapp.com/nominations', {
@@ -35,7 +32,6 @@ class MyPicks extends Component {
             if (!res) {
                 console.log('No response when trying to fetch all nominations')
             } else {
-                console.log(res)
                 this.setState({
                     nominations: res,
                     loading: false

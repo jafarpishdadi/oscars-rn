@@ -34,7 +34,6 @@ class Home extends Component {
     }
     
     renderScene = ({route}) => {
-        console.log(route)
         switch (route.key) {
             case 'mypicks':
                 return <MyPicks navigation={this.props.navigation}/>

@@ -37,9 +37,7 @@ class PredictionPicker extends Component {
                 }
             });
             let res = await response.json();
-            console.log(res)
             if (res.length !== 0) {
-                console.log(res[0])
                 this.setState({
                     info: res[0],
                     myPredictions: res[0].selections,
@@ -53,14 +51,7 @@ class PredictionPicker extends Component {
     }
 
     updatePredictions = async () => {
-        console.log('updatePRedictions')
         this.setState({ loading: true });
-        console.log(this.state.info._id)
-        console.log(JSON.stringify({
-            category: this.state.info.category,
-            user: 'Pete',
-            selections: this.state.myPredictions
-        }))
         try {
             let response = await fetch(`https://oscars-picks-api.herokuapp.com/predictions/${this.state.info._id}`, {
                 method: 'PUT',
@@ -73,9 +64,7 @@ class PredictionPicker extends Component {
                     selections: this.state.myPredictions
                 })
             });
-            console.log(this.state.myPredictions)
             let res = await response;
-            console.log(res)
             if (res) {
                 this.setState({
                     loading: false
