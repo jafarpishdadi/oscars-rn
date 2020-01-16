@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Dimensions } from 'react-native';
-import { TabView } from 'react-native-tab-view';
+import { TabView, TabBar } from 'react-native-tab-view';
 
 import MyPicks from './Shared/MyPicks';
 
@@ -47,12 +47,21 @@ class Home extends Component {
         }
     }
 
+    renderTabBar = (props) => (
+        <TabBar
+            {...props}
+            indicatorStyle={{backgroundColor: '#e0d100'}}
+            style={{backgroundColor: '#262626'}}
+        />
+    )
+
     render() {
         return (
                 <TabView
                     navigation={this.props.navigation}
                     navigationState={this.state}
                     renderScene={this.renderScene}
+                    renderTabBar={this.renderTabBar}
                     onIndexChange={index => this.setState({ index })}
                     initialLayout={{ width: Dimensions.get('window').width }}
                 />
