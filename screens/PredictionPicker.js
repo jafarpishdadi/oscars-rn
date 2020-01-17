@@ -14,7 +14,8 @@ class PredictionPicker extends Component {
             myPredictions: this.props.navigation.state.params.nominees,
             scrollEnabled: true,
             userHasPredicted: false,
-            loading: false
+            loading: false,
+            status: 'Loading...'
         }
     }
 
@@ -38,20 +39,26 @@ class PredictionPicker extends Component {
             });
             let res = await response.json();
             if (res.length !== 0) {
+                console.log(res)
                 this.setState({
                     info: res[0],
                     myPredictions: res[0].selections,
-                    userHasPredicted: true
+                    userHasPredicted: true,
+                    status: 'Got your previous predictions!'
+                })
+            } else {
+                this.setState({
+                    status: 'Predictions not yet completed'
                 })
             }
-            this.setState({loading: false})
+            this.setState({ loading: false })
         } catch (err) {
             console.log(err)
         }
     }
 
     updatePredictions = async () => {
-        this.setState({ loading: true });
+        this.setState({ loading: true, status: 'Loading...' });
         try {
             let response = await fetch(`https://oscars-picks-api.herokuapp.com/predictions/${this.state.info._id}`, {
                 method: 'PUT',
@@ -67,7 +74,8 @@ class PredictionPicker extends Component {
             let res = await response;
             if (res) {
                 this.setState({
-                    loading: false
+                    loading: false,
+                    status: 'Updated!'
                 })
             } else {
                 console.log('There was a problem updating the prediction')
@@ -78,7 +86,7 @@ class PredictionPicker extends Component {
     }
 
     savePredictions = async () => {
-        this.setState({ loading: true })
+        this.setState({ loading: true, status: 'Loading...' })
         try {
             let response = await fetch('https://oscars-picks-api.herokuapp.com/predictions', {
                 method: 'POST',
@@ -96,12 +104,27 @@ class PredictionPicker extends Component {
             if (res.errors) {
                 this.setState({ errors: res.errors })
             } else {
-                this.setState({ userHasPredicted: true })
+                this.setState({ userHasPredicted: true, status: 'Saved!' })
                 // this.props.navigation.goBack();
             }
             this.setState({ loading: false })
         } catch (err) {
             console.log(err)
+        }
+    }
+
+    pickColor() {
+        switch (this.state.status) {
+            case 'Loading...':
+                return '#e0d100';
+            case 'Updated!':
+            case 'Saved!':
+            case 'Got your previous predictions!':
+                return '#39f52c';
+            case 'Predictions not yet completed':
+            case 'You have unsaved changes':
+                return '#ff2e2e';
+
         }
     }
 
@@ -141,12 +164,11 @@ class PredictionPicker extends Component {
                         renderItem={this.renderItem}
                         keyExtractor={(item, index) => item.primary}
                         onDragBegin={() => this.setState({ scrollEnabled: false })}
-                        onDragEnd={({ data }) => this.setState({ myPredictions: data, scrollEnabled: true })}
+                        onDragEnd={({ data }) => this.setState({ myPredictions: data, scrollEnabled: true, status: 'You have unsaved changes' })}
                     />
                 )}
-
-                {!this.state.loading && (
-                    <View style={{ height: 75, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingRight: 20, paddingLeft: 20 }}>
+                <View style={{ height: 75, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingRight: 20, paddingLeft: 20 }}>
+                    {!this.state.loading && (
                         <Button
                             icon={<FontAwesomeIcon icon={faArrowLeft} style={{ color: 'white' }} />}
                             onPress={() => this.props.navigation.goBack()}
@@ -165,6 +187,11 @@ class PredictionPicker extends Component {
                                 fontSize: 30
                             }}
                         />
+                    )}
+                    <View style={{display: 'flex', width: this.state.loading ? '100%' : null, alignItems: 'center'}}>
+                        <Text style={{ color: this.pickColor() }}>{this.state.status}</Text>
+                    </View>
+                    {!this.state.loading && (
                         <Button
                             icon={<FontAwesomeIcon icon={faSave} style={{ color: 'white' }} />}
                             onPress={() => this.state.userHasPredicted ? this.updatePredictions() : this.savePredictions()}
@@ -183,8 +210,8 @@ class PredictionPicker extends Component {
                                 fontSize: 30
                             }}
                         />
-                    </View>
-                )}
+                    )}
+                </View>
             </View>
         )
     }
