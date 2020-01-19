@@ -19,7 +19,7 @@ class Scoreboard extends Component {
     getAllUsers = async () => {
         this.setState({ loading: true })
         try {
-            let response = await fetch('https://oscars-picks-api.herokuapp.com/users', {
+            let response = await fetch('https://oscars-picks-api.herokuapp.com/users/{}', {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json',
@@ -56,7 +56,9 @@ class Scoreboard extends Component {
                 >
                     <View>
                         <Text style={{ color: 'white', fontSize: 30, paddingLeft: 15, paddingRight: 15, paddingTop: 30 }}>Scoreboard</Text>
-                        <Text style={{ color: 'white', fontSize: 20, paddingLeft: 15, paddingRight: 15, paddingTop: 30 }}>Once the Oscars start, check here to see your score compared to your friends. Pull down to refresh.</Text>
+                        <Text style={{ color: 'white', fontSize: 20, paddingLeft: 15, paddingRight: 15, paddingTop: 30 }}>
+                            Once the Oscars start, check here to see your score compared to your friends. Pull down to refresh.
+                        </Text>
                     </View>
                     {
                         !this.state.loading && (
@@ -72,7 +74,7 @@ class Scoreboard extends Component {
                                                 borderBottomColor: 'white'
                                             }}
                                             key={i}
-                                            title={(i + 1) + '. ' + item.name}
+                                            title={(i + 1) + '. ' + item.firstName}
                                             titleStyle={{ color: 'white', fontSize: 25 }}
                                             badge={{
                                                 value: item.score, badgeStyle: {

@@ -3,8 +3,39 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import Home from './screens/Home';
 import PredictionPicker from './screens/PredictionPicker';
-import MyPicks from './screens/Shared/MyPicks'
+import MyPicks from './screens/Shared/MyPicks';
 
+import Landing from './screens/FirstLoad/Landing';
+import CreateUser from './screens/FirstLoad/CreateUser';
+import Rules from './screens/FirstLoad/Rules';
+
+import AuthLoading from './screens/AuthLoading';
+
+const FirstLoad = createStackNavigator(
+  {
+    Landing: {
+      screen: Landing,
+      navigationOptions: {
+        header: null
+      }
+    },
+    CreateUser: {
+      screen: CreateUser,
+      navigationOptions: {
+        header: null
+      }
+    }, 
+    Rules: {
+      screen: Rules,
+      navigationOptions: {
+        header: null
+      }
+    }
+  },
+  {
+    initialRouteName: 'Landing'
+  }
+)
 
 const NotFirstLoad = createStackNavigator(
   {
@@ -35,10 +66,12 @@ const NotFirstLoad = createStackNavigator(
 export default createAppContainer(
   createSwitchNavigator(
     {
-      NotFirstLoad: NotFirstLoad
+      NotFirstLoad: NotFirstLoad,
+      FirstLoad: FirstLoad,
+      AuthLoading: AuthLoading
     },
     {
-      initialRouteName: 'NotFirstLoad'
+      initialRouteName: 'AuthLoading'
     }
   )
 )
