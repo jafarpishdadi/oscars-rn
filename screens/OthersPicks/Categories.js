@@ -2,26 +2,38 @@ import React, { Component } from 'react';
 import { View, ScrollView, Text, ActivityIndicator } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
-class MyPicks extends Component {
+class Categories extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            nominations: [],
+            user: this.props.navigation.state.params,
+            predictions: [],
             loading: true
         }
     }
 
-    componentDidMount() {
-        this.getAllNominations();
+    static navigationOptions = {
+        title: `Categories`,
+        headerStyle: {
+            backgroundColor: '#262626'
+        },
+        headerTintColor: 'white'
     }
 
-    getAllNominations = async () => {
+    componentDidMount() {
+        this.getPredictionsByUser();
+    }
+
+    getPredictionsByUser = async () => {
         this.setState({ loading: true });
+        searchParams = JSON.stringify({
+            user: this.state.user.firstName
+        })
         try {
-            let response = await fetch('https://oscars-picks-api.herokuapp.com/nominations', {
+            let response = await fetch(`https://oscars-picks-api.herokuapp.com/predictions/${searchParams}`, {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json',
@@ -33,7 +45,7 @@ class MyPicks extends Component {
                 console.log('No response when trying to fetch all nominations')
             } else {
                 this.setState({
-                    nominations: res,
+                    predictions: res,
                     loading: false
                 })
             }
@@ -47,14 +59,23 @@ class MyPicks extends Component {
             <View style={{ height: '100%', width: '100%', backgroundColor: '#262626' }}>
                 <ScrollView>
                     <View>
-                        <Text style={{ color: 'white', fontSize: 30, paddingLeft: 15, paddingRight: 15, paddingTop: 30 }}>My Picks</Text>
-                        <Text style={{ color: 'white', fontSize: 20, paddingLeft: 15, paddingRight: 15, paddingTop: 30 }}>Pick a category, then drag and drop nominees in order of most likely to least likely</Text>
+                        <Text style={{ color: 'white', fontSize: 30, paddingLeft: 15, paddingRight: 15, paddingTop: 30 }}>{this.state.user.firstName}'s Picks</Text>
+                        {
+                            this.state.predictions.length > 0 && !this.state.loading && (
+                                <Text style={{ color: 'white', fontSize: 20, paddingLeft: 15, paddingRight: 15, paddingTop: 30 }}>Pick a category to see {this.state.user.firstName}'s predictions.</Text>
+                            )
+                        }
+                        {
+                            this.state.predictions.length === 0 && !this.state.loading && (
+                                <Text style={{ color: 'white', fontSize: 20, paddingLeft: 15, paddingRight: 15, paddingTop: 30 }}>{this.state.user.firstName} has not made any predictions yet. Pester them until they do.</Text>
+                            )
+                        }
                     </View>
                     {
                         !this.state.loading && (
                             <View style={{ display: 'flex', alignItems: 'center', marginTop: 30 }}>
-                                {this.state.nominations.length !== 0 && (
-                                    this.state.nominations.map((item, i) => (
+                                {this.state.predictions.length !== 0 && (
+                                    this.state.predictions.map((item, i) => (
                                         <ListItem
                                             containerStyle={{
                                                 borderWidth: 1,
@@ -66,26 +87,13 @@ class MyPicks extends Component {
                                             key={i}
                                             title={item.category}
                                             rightIcon={<FontAwesomeIcon icon={faChevronRight} />}
-                                            onPress={() => { this.props.navigation.navigate('PredictionPicker', item) }}
+                                        // onPress={() => { this.props.navigation.navigate('Categories', item) }}
                                         />
                                     ))
                                 )}
                             </View>
                         )
                     }
-
-                    {
-                        this.state.loading && (
-                            <View style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 100}}>
-                                <ActivityIndicator
-                                    size='large'
-                                    color='#e0d100'
-                                />
-                            </View>
-
-                        )
-                    }
-
                 </ScrollView>
             </View>
         )
@@ -93,4 +101,4 @@ class MyPicks extends Component {
 
 }
 
-export default MyPicks
+export default Categories

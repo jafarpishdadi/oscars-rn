@@ -107,7 +107,6 @@ class CreateUser extends Component {
     }
 
     saveUserInfo = async () => {
-        console.log('saveUserInfo')
         try {
             await AsyncStorage.multiSet([
                 ['firstName', this.state.firstName],
@@ -115,14 +114,12 @@ class CreateUser extends Component {
                 ['email', this.state.email],
                 ['score', this.state.score.toString()]
             ], (e) => {
-                console.log(e)
                 global.firstName = this.state.firstName;
                 global.lastName = this.state.lastName;
                 global.email = this.state.email;
                 global.score = this.state.score;
                 this.setState({ loading: false })
                 this.props.navigation.navigate('Rules')
-                console.log('rules')
             })
         } catch (err) {
             console.log(err)

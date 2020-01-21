@@ -39,7 +39,6 @@ class PredictionPicker extends Component {
             });
             let res = await response.json();
             if (res.length !== 0) {
-                console.log(res)
                 this.setState({
                     info: res[0],
                     myPredictions: res[0].selections,

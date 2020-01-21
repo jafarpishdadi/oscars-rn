@@ -3,7 +3,8 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import Home from './screens/Home';
 import PredictionPicker from './screens/PredictionPicker';
-import MyPicks from './screens/Shared/MyPicks';
+import Categories from './screens/OthersPicks/Categories';
+
 
 import Landing from './screens/FirstLoad/Landing';
 import CreateUser from './screens/FirstLoad/CreateUser';
@@ -16,19 +17,19 @@ const FirstLoad = createStackNavigator(
     Landing: {
       screen: Landing,
       navigationOptions: {
-        header: null
+        headerShown: false
       }
     },
     CreateUser: {
       screen: CreateUser,
       navigationOptions: {
-        header: null
+        headerShown: false
       }
     }, 
     Rules: {
       screen: Rules,
       navigationOptions: {
-        header: null
+        headerShown: false
       }
     }
   },
@@ -42,20 +43,17 @@ const NotFirstLoad = createStackNavigator(
     Home: {
       screen: Home,
       navigationOptions: {
-        header: null
+        headerShown: false
       }
     },
     PredictionPicker: {
       screen: PredictionPicker,
       navigationOptions: {
-        header: null
+        headerShown: false
       }
     },
-    MyPicks: {
-      screen: MyPicks,
-      navigationOptions: {
-        header: null
-      }
+    Categories: {
+      screen: Categories
     }
   },
   {

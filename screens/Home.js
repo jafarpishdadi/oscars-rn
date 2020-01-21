@@ -4,14 +4,13 @@ import { TabView, TabBar } from 'react-native-tab-view';
 
 import MyPicks from './Shared/MyPicks';
 import Scoreboard from './Shared/Scoreboard';
+import OthersPicks from './Shared/OthersPicks';
 
 const ThirdRoute = () => {
     return (
         <View style={{ flex: 1 }}></View>
     )
 }
-
-
 
 class Home extends Component {
 
@@ -35,7 +34,7 @@ class Home extends Component {
             case 'scoreboard':
                 return <Scoreboard navigation={this.props.navigation}/>
             case 'friendspicks':
-                return ThirdRoute;
+                return <OthersPicks navigation={this.props.navigation}/>;
             default:
                 return null;
         }

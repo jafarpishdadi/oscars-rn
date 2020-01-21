@@ -12,8 +12,6 @@ class AuthLoading extends Component {
             user = {
                 name: await AsyncStorage.getItem('firstName')
             }
-            console.log(user)
-            console.log(user.name)
             user.name ? this.props.navigation.navigate('NotFirstLoad') : this.props.navigation.navigate('FirstLoad')
             
         } catch (err) {
