@@ -4,7 +4,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import Home from './screens/Home';
 import PredictionPicker from './screens/PredictionPicker';
 import Categories from './screens/OthersPicks/Categories';
-
+import PredictionsRO from './screens/Shared/PredictionsRO';
 
 import Landing from './screens/FirstLoad/Landing';
 import CreateUser from './screens/FirstLoad/CreateUser';
@@ -53,7 +53,16 @@ const NotFirstLoad = createStackNavigator(
       }
     },
     Categories: {
-      screen: Categories
+      screen: Categories,
+      navigationOptions: {
+        headerShown: false
+      }
+    },
+    PredictionsRO: {
+      screen: PredictionsRO,
+      navigationOptions: {
+        headerShown: false
+      }
     }
   },
   {

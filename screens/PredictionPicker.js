@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ActivityIndicator, AsyncStorage } from 'react-native';
 import { Button } from 'react-native-elements';
 import { pics } from '../assets/key';
 import DraggableFlatList from 'react-native-draggable-flatlist';
@@ -26,7 +26,7 @@ class PredictionPicker extends Component {
     checkForUserPredictions = async () => {
         this.setState({ loading: true })
         let searchParams = JSON.stringify({
-            user: 'Pete',
+            user: await AsyncStorage.getItem('firstName'),
             category: this.state.info.category
         })
         try {
@@ -66,7 +66,7 @@ class PredictionPicker extends Component {
                     'Content-Type': 'application/json'
                 }, body: JSON.stringify({
                     category: this.state.info.category,
-                    user: 'Pete',
+                    user: await AsyncStorage.getItem('firstName'),
                     selections: this.state.myPredictions
                 })
             });
@@ -94,7 +94,7 @@ class PredictionPicker extends Component {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    user: 'Pete',
+                    user: await AsyncStorage.getItem('firstName'),
                     selections: this.state.myPredictions,
                     category: this.state.info.category
                 })

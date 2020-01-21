@@ -20,6 +20,7 @@ class OthersPicks extends Component {
 
     getAllUsers = async () => {
         this.setState({ loading: true });
+        let firstName = await AsyncStorage.getItem('firstName');
         try {
             let response = await fetch('https://oscars-picks-api.herokuapp.com/users/{}', {
                 method: 'GET',
@@ -32,8 +33,11 @@ class OthersPicks extends Component {
             if (!res) {
                 console.log('No response when trying to fetch all nominations')
             } else {
+                let filtered = res.filter(item => {
+                    return item.firstName !== firstName;
+                })
                 this.setState({
-                    users: res,
+                    users: filtered,
                     loading: false
                 })
             }

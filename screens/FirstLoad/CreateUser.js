@@ -112,12 +112,14 @@ class CreateUser extends Component {
                 ['firstName', this.state.firstName],
                 ['lastName', this.state.lastName],
                 ['email', this.state.email],
-                ['score', this.state.score.toString()]
+                ['score', this.state.score.toString()],
+                ['id', this.state._id]
             ], (e) => {
                 global.firstName = this.state.firstName;
                 global.lastName = this.state.lastName;
                 global.email = this.state.email;
                 global.score = this.state.score;
+                global.id = this.state.id;
                 this.setState({ loading: false })
                 this.props.navigation.navigate('Rules')
             })
