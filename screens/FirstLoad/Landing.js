@@ -20,13 +20,31 @@ class Landing extends Component {
                 <View style={{ display: 'flex', alignItems: 'center'}}>
                     <Image
                         source={require('../../assets/images/award.png')}
-                        style={{ height: 500, width: 315 }}
+                        style={{ height: 400, width: 252 }}
                     />
                 </View>
                 <View>
                     <Text style={{ color: 'white', fontSize: 20, paddingLeft: 15, paddingRight: 15, paddingBottom: 50, textAlign: 'center' }}>Make your knowledge of the HFPA known amongst your friends with this competitive Oscars prediction game.</Text>
                     <Button
-                        title={"Let's get started"}
+                        title={"Log In"}
+                        containerStyle={{
+                            width: '95%',
+                            alignSelf: 'flex-end',
+                            borderRadius: 30,
+                            paddingBottom: 30
+                        }}
+                        titleStyle={{
+                            color: 'black'
+                        }}
+                        buttonStyle={{
+                            width: '95%',
+                            backgroundColor: '#39f52c',
+                            borderRadius: 30
+                        }}
+                        onPress={() => this.props.navigation.navigate('Login')}
+                    />
+                    <Button
+                        title={'Create an account'}
                         containerStyle={{
                             width: '95%',
                             alignSelf: 'flex-end',

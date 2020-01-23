@@ -34,8 +34,9 @@ class Settings extends Component {
         this.setState({ userInfo: userInfo, newUserInfo: userInfo, loading: false });
     }
 
-    backdropPressed() {
-
+    logout = async () => {
+        await AsyncStorage.multiRemove(['firstName', 'lastName', 'email', 'password', 'score', 'id']);
+        this.props.navigation.navigate('FirstLoad')
     }
 
     render() {
@@ -120,7 +121,10 @@ class Settings extends Component {
                                         }}
                                         title='Cancel'
                                         onPress={() => {
-                                            this.deleteItem();
+                                            this.setState({
+                                                isVisible: false,
+                                                changeNameModal: false
+                                            });
                                         }
                                         }
                                     />
@@ -163,7 +167,10 @@ class Settings extends Component {
                                         }}
                                         title='Cancel'
                                         onPress={() => {
-                                            this.deleteItem();
+                                            this.setState({
+                                                isVisible: false,
+                                                resetPredictionsModal: false
+                                            });
                                         }
                                         }
                                     />
@@ -206,7 +213,10 @@ class Settings extends Component {
                                         }}
                                         title='Cancel'
                                         onPress={() => {
-                                            this.deleteItem();
+                                            this.setState({
+                                                isVisible: false,
+                                                logoutModal: false
+                                            });
                                         }
                                         }
                                     />
@@ -223,7 +233,7 @@ class Settings extends Component {
                                             borderRadius: 30
                                         }}
                                         title='Continue'
-                                        onPress={() => this.determineComplete(this.state.overlayInfo.type)}
+                                        onPress={() => this.logout()}
                                     />
                                 </View>
                             </View>
@@ -249,7 +259,10 @@ class Settings extends Component {
                                         }}
                                         title='Cancel'
                                         onPress={() => {
-                                            this.deleteItem();
+                                            this.setState({
+                                                isVisible: false,
+                                                deleteAccountModal: false
+                                            });;
                                         }
                                         }
                                     />

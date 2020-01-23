@@ -9,6 +9,7 @@ import PredictionsRO from './screens/Shared/PredictionsRO';
 import Landing from './screens/FirstLoad/Landing';
 import CreateUser from './screens/FirstLoad/CreateUser';
 import Rules from './screens/FirstLoad/Rules';
+import Login from './screens/FirstLoad/Login';
 
 import AuthLoading from './screens/AuthLoading';
 
@@ -28,6 +29,12 @@ const FirstLoad = createStackNavigator(
     }, 
     Rules: {
       screen: Rules,
+      navigationOptions: {
+        headerShown: false
+      }
+    },
+    Login: {
+      screen: Login,
       navigationOptions: {
         headerShown: false
       }
