@@ -34,9 +34,86 @@ class Settings extends Component {
         this.setState({ userInfo: userInfo, newUserInfo: userInfo, loading: false });
     }
 
+    setUserInfo = async () => {
+        try {
+            await AsyncStorage.multiSet([
+                ['firstName', this.state.userInfo.firstName],
+                ['lastName', this.state.userInfo.lastName],
+                ['email', this.state.userInfo.email],
+                ['password', this.state.userInfo.password],
+                ['score', this.state.userInfo.score],
+                ['id', this.state.userInfo.id]
+            ], (e) => {
+                this.setState({ loading: false })
+            })
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    updateUserInfo = async () => {
+        this.setState({ loading: true })
+        this.closeModal();
+        try {
+            let response = await fetch(`https://oscars-picks-api.herokuapp.com/users/${this.state.userInfo.id}`, {
+                method: 'PUT',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    firstName: this.state.newUserInfo.firstName,
+                    lastName: this.state.newUserInfo.lastName,
+                    email: this.state.newUserInfo.email,
+                    password: this.state.newUserInfo.password,
+                    score: parseInt(this.state.newUserInfo.score)
+                })
+            })
+            let res = await response.json()
+            if (res) {
+                this.setState({
+                    userInfo: {
+                        firstName: res.firstName,
+                        lastName: res.lastName,
+                        email: res.email,
+                        password: res.password,
+                        score: res.score.toString(),
+                        id: res._id
+                    },
+                    newUserInfo: {
+                        firstName: res.firstName,
+                        lastName: res.lastName,
+                        email: res.email,
+                        password: res.password,
+                        score: res.score.toString(),
+                        id: res._id
+                    }
+                })
+                this.setUserInfo();
+            } else {
+                console.log('There was a problem updating the user')
+                this.setState({ loading: false })
+            }
+        } catch (err) {
+            console.log(err)
+            this.setState({ loading: false })
+        }
+    }
+
     logout = async () => {
         await AsyncStorage.multiRemove(['firstName', 'lastName', 'email', 'password', 'score', 'id']);
         this.props.navigation.navigate('FirstLoad')
+    }
+
+    closeModal() {
+        this.setState({
+            isVisible: false, 
+            changeNameModal: false, 
+            resetPredictionsModal: false, 
+            logoutModal: false, 
+            deleteAccountModal: false,
+            inputFocused: false
+        })
     }
 
     render() {
@@ -48,7 +125,7 @@ class Settings extends Component {
                         onBackdropPress={() => {
                             switch (this.state.inputFocused) {
                                 case false:
-                                    return this.setState({ isVisible: false, changeNameModal: false, resetPredictionsModal: false, logoutModal: false, deleteAccountModal: false })
+                                    return this.closeModal();
                                 case 'firstName':
                                     return firstNameInput.current.blur();
                                 case 'lastName':
@@ -70,7 +147,13 @@ class Settings extends Component {
                                     placeholderTextColor='white'
                                     value={this.state.newUserInfo.firstName}
                                     onChangeText={(firstName) => {
-                                        this.setState({ newUserInfo: { firstName: firstName } });
+                                        this.setState({ newUserInfo: { 
+                                            firstName: firstName, 
+                                            lastName: this.state.newUserInfo.lastName,
+                                            email: this.state.newUserInfo.email,
+                                            password: this.state.newUserInfo.password,
+                                            score: this.state.newUserInfo.score    
+                                        } });
                                     }}
                                     onFocus={() => { this.setState({ inputFocused: 'firstName' }) }}
                                     onBlur={() => { this.setState({ inputFocused: false }) }}
@@ -90,7 +173,13 @@ class Settings extends Component {
                                     placeholder='Last Name'
                                     placeholderTextColor='white'
                                     onChangeText={(lastName) => {
-                                        this.setState({ newUserInfo: { lastName: lastName } });
+                                        this.setState({ newUserInfo: { 
+                                            firstName: this.state.newUserInfo.firstName, 
+                                            lastName: lastName,
+                                            email: this.state.newUserInfo.email,
+                                            password: this.state.newUserInfo.password,
+                                            score: this.state.newUserInfo.score
+                                        } });
                                     }}
                                     onFocus={() => { this.setState({ inputFocused: 'lastName' }) }}
                                     onBlur={() => { this.setState({ inputFocused: false }) }}
@@ -141,7 +230,7 @@ class Settings extends Component {
                                             borderRadius: 30
                                         }}
                                         title='Save'
-                                        onPress={() => this.determineComplete(this.state.overlayInfo.type)}
+                                        onPress={() => this.updateUserInfo()}
                                     />
                                 </View>
                             </View>

@@ -16,7 +16,6 @@ class Login extends Component {
             },
             firstName: '',
             lastName: '',
-            hashedPassword: '',
             id: '',
             score: 0
         }
@@ -73,7 +72,7 @@ class Login extends Component {
                 ['firstName', this.state.firstName],
                 ['lastName', this.state.lastName],
                 ['email', this.state.email],
-                ['password', this.state.hashedPassword],
+                ['password', this.state.password],
                 ['score', this.state.score.toString()],
                 ['id', this.state.id]
             ], (e) => {
