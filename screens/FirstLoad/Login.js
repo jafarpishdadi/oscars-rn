@@ -47,7 +47,8 @@ class Login extends Component {
                                     lastName: resp[0].lastName,
                                     password: resp[0].password,
                                     score: resp[0].score,
-                                    id: resp[0]._id
+                                    id: resp[0]._id,
+                                    admin: resp[0].admin
                                 })
                                 this.saveUserInfo();
                             } else {
@@ -74,7 +75,8 @@ class Login extends Component {
                 ['email', this.state.email],
                 ['password', this.state.password],
                 ['score', this.state.score.toString()],
-                ['id', this.state.id]
+                ['id', this.state.id],
+                ['admin', this.state.admin.toString()]
             ], (e) => {
                 this.setState({ loading: false })
                 this.props.navigation.navigate('NotFirstLoad')

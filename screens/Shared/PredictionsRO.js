@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, AsyncStorage } from 'react-native';
 import { Button } from 'react-native-elements';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { pics } from '../../assets/key';
@@ -24,7 +24,12 @@ class PredictionsRO extends Component {
     }
 
     componentDidMount() {
-        console.log(this.state.predictions)
+        this.getName();
+    }
+
+    getName = async () => {
+        let name = await AsyncStorage.getItem('firstName');
+        this.setState({ name: name })
     }
 
     renderItem = ({ item, index, drag, isActive }) => {

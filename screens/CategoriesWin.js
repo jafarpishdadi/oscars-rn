@@ -1,31 +1,26 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { View, ScrollView, Text, ActivityIndicator } from 'react-native';
 import { ListItem, Button } from 'react-native-elements';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
-class Categories extends Component {
+class CategoriesWin extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            user: this.props.navigation.state.params,
-            predictions: [],
             loading: true
         }
     }
 
     componentDidMount() {
-        this.getPredictionsByUser();
+        this.getNominations();
     }
-
-    getPredictionsByUser = async () => {
-        this.setState({ loading: true });
-        searchParams = JSON.stringify({
-            user: this.state.user._id
-        })
+    
+    getNominations = async () => {
+        this.setState({ loading: true })
         try {
-            let response = await fetch(`https://oscars-picks-api.herokuapp.com/predictions/${searchParams}`, {
+            let response = await fetch('https://oscars-picks-api.herokuapp.com/nominations', {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json',
@@ -36,19 +31,15 @@ class Categories extends Component {
             if (!res) {
                 console.log('No response when trying to fetch all nominations')
             } else {
+                const filteredNoms = res.filter(nom => !nom.complete)
                 this.setState({
-                    predictions: res,
+                    nominations: filteredNoms,
                     loading: false
-                })
+                });
             }
         } catch (err) {
             console.log(err);
         }
-    }
-
-    navigate(item) {
-        item.user = this.state.user.firstName;
-        this.props.navigation.navigate('PredictionsRO', item)
     }
 
     render() {
@@ -66,25 +57,25 @@ class Categories extends Component {
                     (
                         <ScrollView>
                             <View>
-                                <Text style={{ color: 'white', fontSize: 30, paddingLeft: 15, paddingRight: 15, paddingTop: 30 }}>{this.state.user.firstName}'s Picks</Text>
+                                <Text style={{ color: 'white', fontSize: 30, paddingLeft: 15, paddingRight: 15, paddingTop: 30 }}>Categories</Text>
                                 {
-                                    this.state.predictions.length > 0 &&
+                                    this.state.nominations.length > 0 &&
                                     (
-                                        <Text style={{ color: 'white', fontSize: 20, paddingLeft: 15, paddingRight: 15, paddingTop: 30 }}>Pick a category to see {this.state.user.firstName}'s predictions.</Text>
+                                        <Text style={{ color: 'white', fontSize: 20, paddingLeft: 15, paddingRight: 15, paddingTop: 30 }}>Pick a category record a winner</Text>
                                     )
                                 }
                                 {
-                                    this.state.predictions.length === 0 &&
+                                    this.state.nominations.length === 0 &&
                                     (
-                                        <Text style={{ color: 'white', fontSize: 20, paddingLeft: 15, paddingRight: 15, paddingTop: 30 }}>{this.state.user.firstName} has not made any predictions yet. Pester them until they do.</Text>
+                                        <Text style={{ color: 'white', fontSize: 20, paddingLeft: 15, paddingRight: 15, paddingTop: 30 }}>All categories recorded!</Text>
                                     )
                                 }
                             </View>
                             <View style={{ display: 'flex', alignItems: 'center', marginTop: 30 }}>
                                 {
-                                    this.state.predictions.length !== 0 &&
+                                    this.state.nominations.length !== 0 &&
                                     (
-                                        this.state.predictions.map((item, i) => (
+                                        this.state.nominations.map((item, i) => (
                                             <ListItem
                                                 containerStyle={{
                                                     borderWidth: 1,
@@ -96,7 +87,7 @@ class Categories extends Component {
                                                 key={i}
                                                 title={item.category}
                                                 rightIcon={<FontAwesomeIcon icon={faChevronRight} />}
-                                                onPress={() => { this.navigate(item) }}
+                                                onPress={() => { this.props.navigation.navigate('WinnerSelect', item) }}
                                             />
                                         ))
                                     )
@@ -128,7 +119,6 @@ class Categories extends Component {
             </View>
         )
     }
-
 }
 
-export default Categories
+export default CategoriesWin

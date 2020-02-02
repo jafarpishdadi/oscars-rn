@@ -100,6 +100,93 @@ class Settings extends Component {
         }
     }
 
+    deleteUser = async () => {
+        this.setState({ loading: true })
+        try {
+            let response = await fetch(`https://oscars-picks-api.herokuapp.com/users/${this.state.userInfo.id}`, {
+                method: 'DELETE',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            let res = await response.json()
+            if (!res) {
+                console.log('There was an issue deleting user')
+            }
+        } catch (err) {
+            console.log(err)
+            this.setState({ loading: false })
+        }
+    }
+
+    deletePredictions = async () => {
+        try {
+            let searchParams = JSON.stringify({
+                user: this.state.newUserInfo.firstName
+            })
+            let response = await fetch(`https://oscars-picks-api.herokuapp.com/predictions/${searchParams}`, {
+                method: 'DELETE',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            let res = await response.json()
+            if (!res) {
+                console.log('There was an issue deleting predictions')
+            }
+            this.setState({
+                loading: false
+            })
+        } catch (err) {
+            console.log(err)
+            this.setState({ loading: false })
+        }
+    }
+
+    deleteAccount() {
+        this.deleteUser()
+            .then(() => {
+                this.deletePredictions()
+                    .then(() => {
+                        AsyncStorage.clear()
+                            .then(() => {
+                                this.setState({ loading: false })
+                                this.props.navigation.navigate('FirstLoad')
+                            })
+                    })
+            })
+    }
+
+    resetPredictions() {
+        this.setState({
+            userInfo: {
+                firstName: this.state.userInfo.firstName,
+                lastName: this.state.userInfo.lastName,
+                email: this.state.userInfo.email,
+                password: this.state.userInfo.password,
+                score: 0,
+                id: this.state.userInfo.id
+            },
+            newUserInfo: {
+                firstName: this.state.newUserInfo.firstName,
+                lastName: this.state.newUserInfo.lastName,
+                email: this.state.newUserInfo.email,
+                password: this.state.newUserInfo.password,
+                score: 0,
+                id: this.state.newUserInfo.id
+            }
+        })
+        this.updateUserInfo()
+            .then(() => {
+                this.deletePredictions()
+                .then(() => {
+                    this.scoreboard.getAllUsers();
+                })
+            })
+    }
+
     logout = async () => {
         await AsyncStorage.multiRemove(['firstName', 'lastName', 'email', 'password', 'score', 'id']);
         this.props.navigation.navigate('FirstLoad')
@@ -107,10 +194,10 @@ class Settings extends Component {
 
     closeModal() {
         this.setState({
-            isVisible: false, 
-            changeNameModal: false, 
-            resetPredictionsModal: false, 
-            logoutModal: false, 
+            isVisible: false,
+            changeNameModal: false,
+            resetPredictionsModal: false,
+            logoutModal: false,
             deleteAccountModal: false,
             inputFocused: false
         })
@@ -147,13 +234,15 @@ class Settings extends Component {
                                     placeholderTextColor='white'
                                     value={this.state.newUserInfo.firstName}
                                     onChangeText={(firstName) => {
-                                        this.setState({ newUserInfo: { 
-                                            firstName: firstName, 
-                                            lastName: this.state.newUserInfo.lastName,
-                                            email: this.state.newUserInfo.email,
-                                            password: this.state.newUserInfo.password,
-                                            score: this.state.newUserInfo.score    
-                                        } });
+                                        this.setState({
+                                            newUserInfo: {
+                                                firstName: firstName,
+                                                lastName: this.state.newUserInfo.lastName,
+                                                email: this.state.newUserInfo.email,
+                                                password: this.state.newUserInfo.password,
+                                                score: this.state.newUserInfo.score
+                                            }
+                                        });
                                     }}
                                     onFocus={() => { this.setState({ inputFocused: 'firstName' }) }}
                                     onBlur={() => { this.setState({ inputFocused: false }) }}
@@ -173,13 +262,15 @@ class Settings extends Component {
                                     placeholder='Last Name'
                                     placeholderTextColor='white'
                                     onChangeText={(lastName) => {
-                                        this.setState({ newUserInfo: { 
-                                            firstName: this.state.newUserInfo.firstName, 
-                                            lastName: lastName,
-                                            email: this.state.newUserInfo.email,
-                                            password: this.state.newUserInfo.password,
-                                            score: this.state.newUserInfo.score
-                                        } });
+                                        this.setState({
+                                            newUserInfo: {
+                                                firstName: this.state.newUserInfo.firstName,
+                                                lastName: lastName,
+                                                email: this.state.newUserInfo.email,
+                                                password: this.state.newUserInfo.password,
+                                                score: this.state.newUserInfo.score
+                                            }
+                                        });
                                     }}
                                     onFocus={() => { this.setState({ inputFocused: 'lastName' }) }}
                                     onBlur={() => { this.setState({ inputFocused: false }) }}
@@ -276,7 +367,7 @@ class Settings extends Component {
                                             borderRadius: 30
                                         }}
                                         title='Continue'
-                                        onPress={() => this.determineComplete(this.state.overlayInfo.type)}
+                                        onPress={() => this.resetPredictions()}
                                     />
                                 </View>
                             </View>
@@ -368,7 +459,7 @@ class Settings extends Component {
                                             borderRadius: 30
                                         }}
                                         title='Delete'
-                                        onPress={() => this.determineComplete(this.state.overlayInfo.type)}
+                                        onPress={() => this.deleteAccount()}
                                     />
                                 </View>
                             </View>
@@ -379,7 +470,8 @@ class Settings extends Component {
                 {!this.state.loading && (
                     <View>
                         <Text style={{ color: 'white', fontSize: 30, paddingLeft: 15, paddingRight: 15, paddingTop: 30, paddingBottom: 30 }}>{this.state.userInfo.firstName} {this.state.userInfo.lastName}</Text>
-                        <Text style={{ color: '#e0d100', fontSize: 15, paddingLeft: 15, paddingRight: 15 }} onPress={() => { this.setState({ isVisible: true, changeNameModal: true }) }}>Change Name</Text>
+                        <Text style={{ color: '#e0d100', fontSize: 15, paddingLeft: 15, paddingRight: 15 }} onPress={() => { this.props.navigation.navigate('NotFirstLoadRules') }}>Read Rules</Text>
+                        <Text style={{ color: '#e0d100', fontSize: 15, paddingLeft: 15, paddingRight: 15, paddingTop: 10 }} onPress={() => { this.setState({ isVisible: true, changeNameModal: true }) }}>Change Name</Text>
                         <Text style={{ color: '#e0d100', fontSize: 15, paddingLeft: 15, paddingRight: 15, paddingTop: 10 }} onPress={() => { this.setState({ isVisible: true, resetPredictionsModal: true }) }}>Reset Predictions</Text>
                         <Text style={{ color: '#e0d100', fontSize: 15, paddingLeft: 15, paddingRight: 15, paddingTop: 10 }} onPress={() => { this.setState({ isVisible: true, logoutModal: true }) }}>Log Out</Text>
                         <Text style={{ color: '#e0d100', fontSize: 15, paddingLeft: 15, paddingRight: 15, paddingTop: 10 }}></Text>

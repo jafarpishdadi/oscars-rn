@@ -5,6 +5,9 @@ import Home from './screens/Home';
 import PredictionPicker from './screens/PredictionPicker';
 import Categories from './screens/OthersPicks/Categories';
 import PredictionsRO from './screens/Shared/PredictionsRO';
+import NotFirstLoadRules from './screens/Shared/NotFirstLoadRules';
+import CategoriesWin from './screens/CategoriesWin';
+import WinnerSelect from './screens/WinnerSelect';
 
 import Landing from './screens/FirstLoad/Landing';
 import CreateUser from './screens/FirstLoad/CreateUser';
@@ -67,6 +70,24 @@ const NotFirstLoad = createStackNavigator(
     },
     PredictionsRO: {
       screen: PredictionsRO,
+      navigationOptions: {
+        headerShown: false
+      }
+    },
+    NotFirstLoadRules: {
+      screen: NotFirstLoadRules,
+      navigationOptions: {
+        headerShown: false
+      }
+    },
+    CategoriesWin: {
+      screen: CategoriesWin,
+      navigationOptions: {
+        headerShown: false
+      }
+    },
+    WinnerSelect: {
+      screen: WinnerSelect,
       navigationOptions: {
         headerShown: false
       }

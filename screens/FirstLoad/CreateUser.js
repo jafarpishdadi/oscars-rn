@@ -91,14 +91,15 @@ class CreateUser extends Component {
                     lastName: this.state.lastName,
                     email: this.state.email,
                     password: this.state.hashedPassword,
-                    score: this.state.score
+                    score: this.state.score,
+                    admin: false
                 })
             })
             let res = await response.json();
             if (res.errors) {
                 this.setState({ errors: res.errors })
             } else {
-                this.saveUserInfo();
+                this.saveUserInfo(res._id);
             }
             this.setState({ loading: false })
         } catch (err) {
@@ -106,15 +107,16 @@ class CreateUser extends Component {
         }
     }
 
-    saveUserInfo = async () => {
+    saveUserInfo = async (id) => {
         try {
             await AsyncStorage.multiSet([
                 ['firstName', this.state.firstName],
                 ['lastName', this.state.lastName],
                 ['email', this.state.email],
-                ['password', this.state.hashedPassword]
+                ['password', this.state.hashedPassword],
                 ['score', this.state.score.toString()],
-                ['id', this.state._id]
+                ['id', id],
+                ['admin', 'false']
             ], (e) => {
                 global.firstName = this.state.firstName;
                 global.lastName = this.state.lastName;
@@ -122,6 +124,7 @@ class CreateUser extends Component {
                 global.password = this.state.hashedPassword;
                 global.score = this.state.score;
                 global.id = this.state.id;
+                global.admin = false;
                 this.setState({ loading: false })
                 this.props.navigation.navigate('Rules')
             })
