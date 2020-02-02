@@ -42,6 +42,7 @@ class Login extends Component {
                     if (resp.length > 0) {
                         bcrypt.compare(this.state.password, resp[0].password, (err, res) => {
                             if (res === true) {
+                                console.log(resp[0].admin)
                                 this.setState({
                                     firstName: resp[0].firstName,
                                     lastName: resp[0].lastName,

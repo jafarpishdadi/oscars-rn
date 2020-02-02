@@ -26,7 +26,7 @@ class Settings extends Component {
 
     getUserInfo = async () => {
         this.setState({ loading: true });
-        asyncUserInfo = await AsyncStorage.multiGet(['firstName', 'lastName', 'email', 'password', 'score', 'id']);
+        asyncUserInfo = await AsyncStorage.multiGet(['firstName', 'lastName', 'email', 'password', 'score', 'id', 'admin']);
         let userInfo = {};
         asyncUserInfo.forEach(property => {
             userInfo[property[0]] = property[1];
@@ -55,6 +55,7 @@ class Settings extends Component {
         this.setState({ loading: true })
         this.closeModal();
         try {
+            console.log(this.state.newUserInfo.score)
             let response = await fetch(`https://oscars-picks-api.herokuapp.com/users/${this.state.userInfo.id}`, {
                 method: 'PUT',
                 headers: {
@@ -66,7 +67,8 @@ class Settings extends Component {
                     lastName: this.state.newUserInfo.lastName,
                     email: this.state.newUserInfo.email,
                     password: this.state.newUserInfo.password,
-                    score: parseInt(this.state.newUserInfo.score)
+                    score: parseInt(this.state.newUserInfo.score),
+                    admin: this.state.newUserInfo.admin
                 })
             })
             let res = await response.json()
@@ -78,7 +80,8 @@ class Settings extends Component {
                         email: res.email,
                         password: res.password,
                         score: res.score.toString(),
-                        id: res._id
+                        id: res._id,
+                        admin: res.admin
                     },
                     newUserInfo: {
                         firstName: res.firstName,
@@ -86,7 +89,8 @@ class Settings extends Component {
                         email: res.email,
                         password: res.password,
                         score: res.score.toString(),
-                        id: res._id
+                        id: res._id,
+                        admin: res.admin
                     }
                 })
                 this.setUserInfo();
@@ -123,7 +127,7 @@ class Settings extends Component {
     deletePredictions = async () => {
         try {
             let searchParams = JSON.stringify({
-                user: this.state.newUserInfo.firstName
+                user: this.state.newUserInfo.id
             })
             let response = await fetch(`https://oscars-picks-api.herokuapp.com/predictions/${searchParams}`, {
                 method: 'DELETE',
@@ -166,25 +170,25 @@ class Settings extends Component {
                 lastName: this.state.userInfo.lastName,
                 email: this.state.userInfo.email,
                 password: this.state.userInfo.password,
-                score: 0,
-                id: this.state.userInfo.id
+                score: '0',
+                id: this.state.userInfo.id,
+                admin: this.state.userInfo.admin
             },
             newUserInfo: {
                 firstName: this.state.newUserInfo.firstName,
                 lastName: this.state.newUserInfo.lastName,
                 email: this.state.newUserInfo.email,
                 password: this.state.newUserInfo.password,
-                score: 0,
-                id: this.state.newUserInfo.id
+                score: '0',
+                id: this.state.newUserInfo.id,
+                admin: this.state.newUserInfo.admin
             }
-        })
-        this.updateUserInfo()
-            .then(() => {
-                this.deletePredictions()
+        }, () => {
+            this.updateUserInfo()
                 .then(() => {
-                    this.scoreboard.getAllUsers();
+                    this.deletePredictions()
                 })
-            })
+        })
     }
 
     logout = async () => {

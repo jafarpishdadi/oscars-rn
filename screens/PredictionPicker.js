@@ -27,7 +27,7 @@ class PredictionPicker extends Component {
     checkForUserPredictions = async () => {
         this.setState({ loading: true })
         let searchParams = JSON.stringify({
-            user: await AsyncStorage.getItem('firstName'),
+            user: await AsyncStorage.getItem('id'),
             category: this.state.info.category
         })
         try {
@@ -157,9 +157,9 @@ class PredictionPicker extends Component {
             <View style={{ flex: 1, alignItems: 'center' }}>
                 <TouchableOpacity style={{ height: 100, width: '97%', backgroundColor: 'white', alignItems: 'center', borderRadius: 10, marginBottom: 10, flexDirection: 'row' }} onLongPress={() => !this.state.readOnly ? drag() : null} activeOpacity={0.9}>
                     <Image source={pics[item.primary] || pics[item.secondary]} style={{ marginLeft: 10, height: 75, width: 47 }} />
-                    <View>
+                    <View style={{width: '100%'}}>
                         <Text style={{ paddingLeft: 10, marginRight: 20 }}>{item.primary}</Text>
-                        <Text style={{ paddingLeft: 10, marginRight: 20 }}>{item.secondary}</Text>
+                        <Text style={{ paddingLeft: 10, marginRight: 20, width: '80%' }}>{item.secondary}</Text>
                     </View>
                 </TouchableOpacity>
             </View>
